@@ -46,4 +46,24 @@ In `bookstore/orders.py:37`, the evaluation of the `STAFF` coupon code contained
   - Removed the duplicate `else:` branch under the `STAFF` coupon condition, ensuring that the discount is exclusively applied when `auth.is_admin(token)` evaluates to `True`.
 - Verified that execution of `bookstore/main.py` remains functional and preserves expected behavior.
 
+---
+
+## [2026-10-15] Fix 3: Refactor process_order to Reduce Cognitive Complexity
+
+### Description
+Resolved SonarQube Maintainability issue (rule `python:S3776`) in `bookstore/orders.py`.
+
+### Context & Root Cause
+In `bookstore/orders.py:8`, `process_order` had a Cognitive Complexity score of 42 (exceeding the threshold of 15 allowed). This was caused by deeply nested conditional blocks, loops, stock availability checks, coupon evaluations, and shipping options inside a single monolithic function.
+
+### Changes Made
+- Decomposed `process_order` in `bookstore/orders.py`:
+  - Inverted the session verification check to a guard clause (`if username == None:` early exit) to eliminate outer nesting.
+  - Extracted cart item processing and inventory check logic into helper function `_process_cart_item(item)`.
+  - Extracted coupon discount calculation into helper function `_apply_coupon(total, coupon, token)`.
+  - Extracted shipping cost calculation into helper function `_apply_shipping(total, shipping)`.
+- Reduced Cognitive Complexity of `process_order` from 42 to well below 15.
+- Verified that execution of `bookstore/main.py` remains functional with identical outputs.
+
+
 
