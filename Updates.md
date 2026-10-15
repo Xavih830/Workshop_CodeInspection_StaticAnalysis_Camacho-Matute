@@ -65,5 +65,21 @@ In `bookstore/orders.py:8`, `process_order` had a Cognitive Complexity score of 
 - Reduced Cognitive Complexity of `process_order` from 42 to well below 15.
 - Verified that execution of `bookstore/main.py` remains functional with identical outputs.
 
+---
+
+## [2026-10-15] Fix 4: Replace Insecure MD5 Hashing with SHA-256 for Password Storage
+
+### Description
+Resolved SonarQube Security issue (rule `python:S4790`) in `bookstore/auth.py`.
+
+### Context & Root Cause
+In `bookstore/auth.py:12`, the `hash_password` function utilized `hashlib.md5()` to hash user credentials. MD5 is an obsolete, cryptographically broken algorithm susceptible to collision and rainbow table attacks, leaving stored user passwords vulnerable to compromise.
+
+### Changes Made
+- Modified `bookstore/auth.py`:
+  - Replaced `hashlib.md5(password.encode()).hexdigest()` with `hashlib.sha256(password.encode()).hexdigest()`.
+- Verified that user registration and authentication flow in `bookstore/main.py` executes without errors.
+
+
 
 
