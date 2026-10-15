@@ -31,3 +31,19 @@ In `bookstore/orders.py:11`, the empty order check used the identity operator `i
   - Replaced `if items is []:` with `if items == []:`.
 - Verified that execution of `bookstore/main.py` remains functional and preserves expected behavior.
 
+---
+
+## [2026-10-15] Fix 2: Remove Redundant Branch with Identical Implementation in Coupon Handling
+
+### Description
+Resolved SonarQube Reliability issue (rule `python:S1871`) in `bookstore/orders.py`.
+
+### Context & Root Cause
+In `bookstore/orders.py:37`, the evaluation of the `STAFF` coupon code contained an `if/else` block where both the `if auth.is_admin(token):` and the `else:` branches executed the exact same statement (`total = total * 0.7`). This was a logic bug that granted the staff discount even to unauthorized users while creating redundant code branches.
+
+### Changes Made
+- Modified `bookstore/orders.py`:
+  - Removed the duplicate `else:` branch under the `STAFF` coupon condition, ensuring that the discount is exclusively applied when `auth.is_admin(token)` evaluates to `True`.
+- Verified that execution of `bookstore/main.py` remains functional and preserves expected behavior.
+
+
