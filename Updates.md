@@ -95,3 +95,20 @@ In `bookstore/database.py:62`, `update_stock` placed a `return True` statement i
   - Removed the anti-pattern `try/finally: return True` block in `update_stock`.
   - Moved `return True` directly to the end of `update_stock` after committing the database transaction.
 - Verified that `database.update_stock` functions correctly and the Python interpreter syntax warning is eliminated.
+
+---
+
+## [2026-10-15] Fix 11: Use Cryptographically Secure Pseudo-Random Number Generator for Session Tokens
+
+### Description
+Resolved SonarQube Security issue (rule `python:S2245`) in `bookstore/auth.py`.
+
+### Context & Root Cause
+In `bookstore/auth.py:29`, authentication session tokens were generated using `random.randint()`. Standard pseudo-random number generators (PRNG) like Python's `random` module rely on the Mersenne Twister algorithm, which is completely predictable once sufficient outputs are observed. This enables session hijacking and user impersonation attacks.
+
+### Changes Made
+- Modified `bookstore/auth.py`:
+  - Replaced `import random` with `import secrets`.
+  - Replaced insecure `token = str(random.randint(100000, 999999))` with cryptographically strong `token = secrets.token_hex(16)`.
+- Verified that login, session storage, and subsequent order operations function securely in `bookstore/main.py`.
+
