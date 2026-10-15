@@ -80,6 +80,18 @@ In `bookstore/auth.py:12`, the `hash_password` function utilized `hashlib.md5()`
   - Replaced `hashlib.md5(password.encode()).hexdigest()` with `hashlib.sha256(password.encode()).hexdigest()`.
 - Verified that user registration and authentication flow in `bookstore/main.py` executes without errors.
 
+---
 
+## [2026-10-15] Fix 10: Remove Control Flow 'return' Statement from 'finally' Block
 
+### Description
+Resolved SonarQube Reliability issue (rule `python:S1143` / `python:S2737`) in `bookstore/database.py`.
 
+### Context & Root Cause
+In `bookstore/database.py:62`, `update_stock` placed a `return True` statement inside a `finally:` block. In Python, returning from a `finally` block suppresses and swallows any unhandled exception raised within the preceding `try` block, masking critical database execution errors and triggering runtime `SyntaxWarning`.
+
+### Changes Made
+- Modified `bookstore/database.py`:
+  - Removed the anti-pattern `try/finally: return True` block in `update_stock`.
+  - Moved `return True` directly to the end of `update_stock` after committing the database transaction.
+- Verified that `database.update_stock` functions correctly and the Python interpreter syntax warning is eliminated.
